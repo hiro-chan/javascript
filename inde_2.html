@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>PONG GAME</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Century Gothic";
+            font-size: 16px;
+        }
+        #container {
+            text-align: center;
+            margin: 5px auto;
+        }
+        #mycanvas {
+            background: #AAEDFF;
+        }
+        p.sample img {
+            width: 60px;  /* 横幅を200pxに */
+        }
+   
+    </style>
+</head>
+<body>
+    <p class="sample">type<br>        
+        <img src="img/laser.jpg" alt="laser">
+        <input type="radio" name="q1" value="laser">       
+        <img src="img/laser_radial.jpg" alt="laser_radial">
+        <input type="radio" name="q1" value="laser_radial">        
+        <img src="img/laser_4.7.jpg" alt="laser_4.7">
+        <input type="radio" name="q1" value="laser_4.7">       
+        <img src="img/470.jpg" alt="470">
+        <input type="radio" name="q1" value="470">        
+        <img src="img/snipe.jpg" alt="snipe">
+        <input type="radio" name="q1" value="snipe">      
+        <img src="img/taser.jpg" alt="taser">
+        <input type="radio" name="q1" value="taser">       
+        <img src="img/optimist.jpg" alt="optimist">
+        <input type="radio" name="q1" value="optimist">   
+        </p class="sample">
+    <div id="container">
+        <canvas width="400" height="400" id="mycanvas">
+            Canvasに対応したブラウザを用意してください。
+        </canvas>
+    </div>
+    <form>
+        <input type="button" value="画像に変換" onclick="chgImg()">
+    </form>
+    <div><img id="newImg"></div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script>
+    
+        $(function() {
+            var ctx;
+            var myAllow;
+            var myCircle;
+            var x;
+            var y;
+            var xx;
+            var yy;
+            var xxx;
+            var yyy;
+            var mouseX;
+            var mouseY;
+            var angle;
+            textarea = null;
+            var radius;
+            var flag = 0;
+
+            var canvas = document.getElementById('mycanvas');
+            if (!canvas || !canvas.getContext) return false;
+            ctx = canvas.getContext('2d');
+
+            var Allow = function() {
+
+                this.draw = function() {
+
+                    ctx.beginPath();
+                    ctx.lineWidth = 6;
+                    ctx.strokeStyle = 'gray';
+
+
+                    // 矢印のラインを描画
+                    ctx.moveTo(200, 200);
+                    //ctx.lineTo(0 + this.radius * Math.cos(this.angle),70 + this.radius * Math.sin(this.angle));
+                    ctx.lineTo(this.radius * Math.cos(this.angle), this.radius * Math.sin(this.angle));
+                    ctx.stroke();
+
+                    ctx.fillStyle = 'gray';
+                    ctx.arc(this.radius * Math.cos(this.angle), this.radius * Math.sin(this.angle), 6, 0, 2*Math.PI, true);
+                    ctx.fill();  
+                };
+                this.move = function() {
+                    this.x = mouseX - $('#mycanvas').offset().left;
+                    this.y = mouseY - $('#mycanvas').offset().top;
+                    this.radius = Math.sqrt(this.x * this.x + this.y * this.y);
+                    this.angle = Math.acos(this.x / this.radius);
+                };
+            };
+
+            var Circle = function() {
+                this.draw = function() {
+                    ctx.save();
+                    ctx.setLineDash([4, 8]);
+                    ctx.beginPath();
+                    ctx.arc( 200, 200, 50, 0 * Math.PI / 180, 360 * Math.PI / 180, false ) ;
+                    ctx.strokeStyle = "blue" ;
+                    ctx.lineWidth = 4 ;
+                    ctx.stroke() ;
+
+                    ctx.beginPath () ;
+                    ctx.arc( 200, 200, 100, 0 * Math.PI / 180, 360 * Math.PI / 180, false ) ;
+                    ctx.strokeStyle = "yellow" ;
+                    ctx.lineWidth = 4 ;
+                    ctx.stroke() ;
+
+                    ctx.beginPath () ;
+                    ctx.arc( 200, 200, 150, 0 * Math.PI / 180, 360 * Math.PI / 180, false ) ;
+                    ctx.strokeStyle = "red" ;
+                    ctx.lineWidth = 4 ;
+                    ctx.stroke() ;
+                    ctx.restore();
+                };
+            };
+
+            canvas.addEventListener('dblclick', function() {
+            if(!textarea) {
+                textarea = document.createElement('textarea');
+                textarea.className = 'info';
+                document.body.appendChild(textarea);
+            };
+            //xxx = mouseX - $('#mycanvas').offset().left;
+            //yyy = mouseY - $('#mycanvas').offset().top;
+
+            //
+            //textarea.style.top = yyy + 'px';
+            //textarea.style.left = xxx + 'px';
+
+            textarea.style.position = 'fixed';
+            textarea.style.top = '160px';
+            textarea.style.left = '3px';
+            flag++;
+            }, false);
+
+            function chgImg(){
+                var png = canvas.toDataURL();
+                document.getElementById("newImg").src = png;
+
+            };
+
+
+
+
+            
+
+            myAllow = new Allow();
+            myCircle = new Circle();
+             
+            function clearStage() {
+                ctx.fillStyle = '#AAEDFF';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            };
+            function update() {                
+                clearStage();              
+                myAllow.draw();                
+                myCircle.draw();               
+                myAllow.move();
+                setTimeout(function() {
+                    console.log(flag);
+                    if(flag % 2 == 0){
+                        update();
+                    };
+                }, 20);              
+            };
+            update();
+            canvas.addEventListener ('click', function() {
+                flag++;
+                update();
+            });
+
+            $('body').mousemove(function(e) {
+                mouseX = e.pageX;
+                mouseY = e.pageY;
+            });   
+        });
+    </script>
+</body>
+</html>
