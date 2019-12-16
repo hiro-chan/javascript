@@ -62,8 +62,6 @@
         <img src="img/optimist.PNG" alt="optimist">
         <input type="radio" name="q1" value="optimist">   
     </p class="sailboat">
-    </form>
-    
     <!-- 波高の選択-->
     <p class="wave">波高<br>        
         <img src="img/さざ波.PNG" alt="さざ波">
@@ -85,9 +83,9 @@
         <img src="img/高波3.PNG" alt="高波3">
         <input type="radio" name="q2" value="高波3">
     </p class="wave">
-    <form>
-        <input type="button" value="マップに表示" onclick="put_on_map()">
+    <input type="button" value="マップに表示" onclick="put_on_map();"/>
     </form>
+
     <div id="map"></div>
     <div id="container">
         <canvas width="400" height="400" id="mycanvas">
@@ -95,7 +93,7 @@
         </canvas>
     </div>
     <form>
-        <input type="button" value="画像に変換" onclick="chgImg()">
+        <input type="button" value="画像に変換" onclick="chgImg();"/>
     </form>
     <div><img id="newImg"></div>
 
@@ -103,11 +101,13 @@
     <script>
 
         var sailboat_image = 'img/sailboat.png';
+        var wave_image = '';
         var infoWindow_username; //マーカーに吹き出しを付ける(ユーザ名)
         var infoWindow_wave; //マーカーに吹き出しを付ける(波高)
         var infoWindow;
         var form = document.forms.myform;
-        form.addEventListener('change', function() {
+
+        function put_on_map(){
             switch(form.q1.value){
                 case 'laser':
                     sailboat_image = "img/laser.PNG"
@@ -138,8 +138,38 @@
                     console.log('optimist');
                     break;
             }
-
-            function initMap(position) {
+            switch(form.q2.value){
+                case 'さざ波':
+                    wave_image = "img/さざ波.PNG"                  
+                    break;
+                case 'さざ波2':
+                    wave_image = "img/さざ波2.PNG"                 
+                    break;
+                case 'さざ波3':
+                    wave_image = "img/さざ波3.PNG"                
+                    break;
+                case '中波':
+                    wave_image = "img/中波.PNG"                   
+                    break;
+                case '中波2':
+                    wave_image = "img/中波2.PNG"                  
+                    break;
+                case '中波3':
+                    wave_image = "img/中波3.PNG"                    
+                    break;
+                case '高波':
+                    wave_image = "img/高波.PNG"                   
+                    break;
+                case '高波2':
+                    wave_image = "img/高波2.PNG"
+                    break;
+                case '高波3':
+                    wave_image = "img/高波3.PNG"
+                    break;
+            }
+            navigator.geolocation.getCurrentPosition(initMap, error);//成功と失敗を判断
+        }
+        function initMap(position) {
                 var latitude  = position.coords.latitude;//緯度
                 var longitude = position.coords.longitude;//経度
                 //var latlng = new google.maps.LatLng( 34.808502, 135.639683 );
@@ -148,8 +178,6 @@
                     zoom: 14,
                     center: latlng
                 });
-
-                //console.log(sailboat_image);
                     
                 //マーカーの設定
                 var marker = new google.maps.Marker({
@@ -163,7 +191,8 @@
 
                 var myInfoWindow = new google.maps.InfoWindow({
                     // 吹き出しに出す文
-                    content: "hiroyuki214392\<br\>\<img src=\"img/さざ波2.PNG\"  width=\"50\" height=\"50\" \>"
+                    //content: "hiroyuki214392\<br\>\<img src= \+ wave_image \+ width=\"50\" height=\"50\" \>"
+                    content: "hiroyuki214392\<br\>\<img src=" + wave_image + " width=\"50\" height=\"50\" \>"
                 });
                 // 吹き出しを開く
                 myInfoWindow.open(map, marker);
@@ -173,44 +202,10 @@
                     myInfoWindow.open(map, marker);
                     });
                 });            
-            };
-            function error() {
-                console.log("map表示でエラー発生")
-            };
-            navigator.geolocation.getCurrentPosition(initMap, error);//成功と失敗を判断
-            
-        }, false);
-
-        
-        /*
-        function initMap(position) {
-            var latitude  = position.coords.latitude;//緯度
-            var longitude = position.coords.longitude;//経度
-            //var latlng = new google.maps.LatLng( 34.808502, 135.639683 );
-            var latlng = new google.maps.LatLng( latitude, longitude );
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 14,
-                center: latlng
-            });
-
-            console.log(sailboat_image);
-                
-            //マーカーの設定
-            var marker = new google.maps.Marker({
-                position: latlng,
-                map: map,
-                url: sailboat_image,
-                scaledSize: new google.maps.Size(60, 60)
-
-            });
-
-            
         };
         function error() {
             console.log("map表示でエラー発生")
         };
-        navigator.geolocation.getCurrentPosition(initMap, error);//成功と失敗を判断
-        */
         
     </script>
 
